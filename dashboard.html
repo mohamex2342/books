@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة التحكم</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* أضف هذا في ملفات CSS أو داخل <style> في كل صفحة */
+    /* قواعد عامة */
+    body {
+      font-size: 1rem;
+      padding: 0;
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+}
+    h1 {
+      color: #4b2e83;
+      text-align: center;
+}
+.rating-list {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.rating-item {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+}
+.rating-item:last-child {
+      border-bottom: none;
+}
+
+/* استجابة للهواتف */
+@media (max-width: 600px) {
+  .container {
+    max-width: 98vw;
+    padding: 10px 2vw;
+    gap: 18px;
+  }
+  .book {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+    max-width: 98vw;
+  }
+  .book-icon {
+    margin: 0 0 10px 0;
+    font-size: 38px;
+    text-align: center;
+  }
+  .book-title {
+    font-size: 1.1em;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .actions {
+    align-items: center;
+    gap: 8px;
+  }
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 8px;
+    font-size: 1em;
+  }
+  .back-btn {
+    position: static;
+    margin: 10px 0;
+    width: 100%;
+    text-align: center;
+    display: block;
+  }
+  iframe {
+    min-height: 300px;
+    height: 50vh;
+  }
+}
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <h1>⭐ تقييمات المستخدمين</h1>
+  <div class="rating-list" id="ratingList">جارٍ تحميل التقييمات...</div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCPmffrAJIm3GELYowytRc50FiB317HWfY",
+      authDomain: "chat-m-r.firebaseapp.com",
+      databaseURL: "https://chat-m-r-default-rtdb.firebaseio.com",
+      projectId: "chat-m-r"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    db.ref("ratings").once("value").then(snapshot => {
+      const data = snapshot.val();
+      const container = document.getElementById("ratingList");
+      container.innerHTML = "";
+
+      for (const bookId in data) {
+        for (const userId in data[bookId]) {
+          const rating = data[bookId][userId];
+          const item = document.createElement("div");
+          item.className = "rating-item";
+          item.textContent = `📘 ${bookId} | 👤 المستخدم: ${userId} | ⭐ التقييم: ${rating}`;
+          container.appendChild(item);
+}
+}
+
+      if (container.innerHTML === "") {container.innerHTML = "لا توجد تقييمات حتى الآن.";
+}
+});
+  </script>
+
+</body>
+</html>
