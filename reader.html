@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>📖 قراءة الكتاب</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+}
+
+    header {
+      background: linear-gradient(90deg, #4b2e83, #007bff);
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2em;
+      font-weight: bold;
+}
+
+.book-name {
+      flex-grow: 1;
+      text-align: right;
+}
+
+.buttons {
+      display: flex;
+      gap: 10px;
+}
+
+.buttons a {
+      background: #fff;
+      color: #4b2e83;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9em;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: background 0.2s;
+}
+
+.buttons a:hover {
+      background: #e3f0ff;
+}
+
+    iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+}
+
+.back-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: #e74c3c;
+      color: #fff;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+}
+
+.back-btn:hover {
+      background: #c0392b;
+}
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <a class="back-btn" href="index.html">← رجوع</a>
+
+  <header>
+    <div class="book-name" id="bookName">📖 قراءة الكتاب</div>
+    <div class="buttons">
+      <a id="downloadBtn" href="#" download>⬇️ تحميل</a>
+      <a id="shareBtn" href="#" target="_blank">📤 مشاركة</a>
+    </div>
+  </header>
+
+  <iframe id="pdfFrame" src=""></iframe>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const file = params.get('file');
+
+    if (file) {
+      // عرض الملف داخل iframe
+      document.getElementById('pdfFrame').src = file;
+
+      // استخراج اسم الكتاب من الرابط
+      const fileName = file.split('/').pop().replace('.pdf', '');
+      document.getElementById('bookName').textContent = `📖 ${fileName}`;
+
+      // زر التحميل
+      document.getElementById('downloadBtn').href = file;
+
+      // زر المشاركة (يدعم عدة منصات)
+      const pageUrl = window.location.href;
+      const encodedText = encodeURIComponent(`أنصحك بقراءة هذا الكتاب: ${pageUrl}`);
+
+      const shareLinks = [
+        `https://wa.me/?text=${encodedText}`,
+        `https://t.me/share/url?url=${pageUrl}&text=${encodedText}`,
+        `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`,
+        `https://twitter.com/intent/tweet?url=${pageUrl}&text=${encodedText}`,
+        `https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${encodedText}`
+      ];
+
+      // فتح نافذة مشاركة متعددة
+      document.getElementById('shareBtn').onclick = function(e) {
+        e.preventDefault();
+        shareLinks.forEach(link => window.open(link, '_blank'));
+};
+} else {
+      document.getElementById('pdfFrame').outerHTML = "<p style='text-align:center; margin-top:50px;'>لم يتم العثور على الملف.</p>";
+}
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول</title>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #e3f0ff, #f9e7fe);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+}
+    h1 {
+      color: #4b2e83;
+      margin-bottom: 20px;
+}
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #007bff, #4b2e83);
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+}
+    button:hover {
+      background: linear-gradient(90deg, #4b2e83, #007bff);
+}
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+
+  <h1>تسجيل الدخول إلى مكتبتي الرقمية</h1>
+  <button onclick="loginWithGoogle()">تسجيل الدخول باستخدام Google</button>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCPmffrAJIm3GELYowytRc50FiB317HWfY",
+      authDomain: "chat-m-r.firebaseapp.com",
+      projectId: "chat-m-r"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).then(result => {
+        alert("تم تسجيل الدخول بنجاح");
+        window.location.href = "index.html";
+}).catch(error => {
+        alert("فشل تسجيل الدخول: " + error.message);
+});
+}
+  </script>
+
+</body>
+</html>
