@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📚 مكتبتي الرقمية</title>
+  <title>📚 المكتبه الرقمية</title>
   <style>
     /* أضف هذا في ملفات CSS أو داخل <style> في كل صفحة */
     /* قواعد عامة */
@@ -25,6 +25,8 @@ body {
     align-items: stretch;
     padding: 12px;
     max-width: 98vw;
+    min-width: 0;
+    width: 100%;
   }
   .book-icon {
     margin: 0 0 10px 0;
@@ -45,6 +47,16 @@ body {
     gap: 10px;
     padding: 10px 8px;
     font-size: 1em;
+    align-items: stretch;
+    text-align: center;
+  }
+  .navbar .title {
+    margin-bottom: 8px;
+    font-size: 1.1em;
+  }
+  #mainLoginBtn {
+    width: 100%;
+    margin-bottom: 8px;
   }
   .back-btn {
     position: static;
@@ -59,6 +71,42 @@ body {
   }
 }
 
+/* تحسين تناسق البار العلوي لجميع الأجهزة */
+.navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #4b2e83, #007bff);
+  padding: 15px 30px;
+  color: #fff;
+  font-size: 1.2em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+.navbar .title {
+  font-weight: bold;
+  letter-spacing: 1px;
+  flex: 1;
+  text-align: right;
+  font-size: 1.2em;
+}
+#mainLoginBtn {
+  padding: 7px 18px;
+  background: #0064fa;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 1em;
+  cursor: pointer;
+  min-width: 120px;
+  transition: background 0.2s;
+}
+#mainLoginBtn:hover {
+  background: #0056b3;
+}
+
     body {
       font-family: 'Cairo', 'Arial', sans-serif;
       background: linear-gradient(135deg, #e3f0ff 0%, #f9e7fe 100%);
@@ -66,32 +114,6 @@ body {
       padding: 0;
       text-align: center;
       min-height: 100vh;
-}
-
-.navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(90deg, #4b2e83, #007bff);
-      padding: 15px 30px;
-      color: #fff;
-      font-size: 1.2em;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.navbar.title {
-      font-weight: bold;
-      letter-spacing: 1px;
-}
-
-.navbar.search-icon {
-      cursor: pointer;
-      font-size: 1.4em;
-      transition: transform 0.2s;
-}
-
-.navbar.search-icon:hover {
-      transform: scale(1.2);
 }
 
     #loginStatus {
@@ -110,7 +132,7 @@ body {
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.container {
+    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -118,11 +140,12 @@ body {
       padding: 30px 10px;
       max-width: 600px;
       margin: auto;
-}
-
-.book {
       width: 100%;
-      max-width: 500px;
+    }
+    .book {
+      width: 100%;
+      max-width: 350px;
+      min-width: 220px;
       background: linear-gradient(135deg, #f9e7fe 60%, #e3f0ff 100%);
       border: 2px solid #4b2e83;
       border-radius: 22px;
@@ -133,35 +156,28 @@ body {
       justify-content: space-between;
       padding: 20px;
       transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.book:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 16px 32px rgba(75,46,131,0.18), 0 3px 12px rgba(0,123,255,0.18);
-      border-color: #007bff;
-}
-
-.book-icon {
+      box-sizing: border-box;
+    }
+    .book-icon {
       font-size: 50px;
       color: #4b2e83;
       margin-right: 20px;
-}
-
-.book-title {
+      flex-shrink: 0;
+    }
+    .book-title {
       flex-grow: 1;
       font-size: 1.3em;
       color: #007bff;
       font-weight: bold;
       letter-spacing: 1px;
       text-align: right;
-}
-
-.actions {
+    }
+    .actions {
       display: flex;
       flex-direction: column;
       gap: 6px;
       align-items: flex-end;
-}
+    }
 
 .actions a {
       font-size: 13px;
@@ -203,7 +219,7 @@ body {
 <body>
 
   <div class="navbar">
-  <div class="title">📚 مكتبتي الرقمية</div>
+  <div class="title">📚 المكتبه الرقمية</div>
   <button id="mainLoginBtn" style="padding:7px 18px;background:#007bff;color:#fff;border:none;border-radius:7px;font-size:1em;cursor:pointer;">تسجيل الدخول</button>
 </div>
 
