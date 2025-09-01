@@ -5,80 +5,46 @@
   <title>لوحة التحكم</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* أضف هذا في ملفات CSS أو داخل <style> في كل صفحة */
-    /* قواعد عامة */
     body {
-      font-size: 1rem;
-      padding: 0;
-      margin: 0;
       font-family: 'Cairo', sans-serif;
       background-color: #f4f4f4;
       padding: 20px;
+      margin: 0;
 }
-    h1 {
-      color: #4b2e83;
+    h1, h2 {
       text-align: center;
+      color: #4b2e83;
 }
-.rating-list {
+.book-list,.rating-list {
       max-width: 600px;
-      margin: auto;
+      margin: 20px auto;
       background: #fff;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.rating-item {
+.book-item,.rating-item {
       border-bottom: 1px solid #eee;
       padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
 }
-.rating-item:last-child {
-      border-bottom: none;
+.book-text,.rating-text {
+      flex: 1;
 }
-
-/* استجابة للهواتف */
-@media (max-width: 600px) {
-  .container {
-    max-width: 98vw;
-    padding: 10px 2vw;
-    gap: 18px;
-  }
-  .book {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 12px;
-    max-width: 98vw;
-  }
-  .book-icon {
-    margin: 0 0 10px 0;
-    font-size: 38px;
-    text-align: center;
-  }
-  .book-title {
-    font-size: 1.1em;
-    text-align: center;
-    margin-bottom: 8px;
-  }
-  .actions {
-    align-items: center;
-    gap: 8px;
-  }
-  .navbar {
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px 8px;
-    font-size: 1em;
-  }
-  .back-btn {
-    position: static;
-    margin: 10px 0;
-    width: 100%;
-    text-align: center;
-    display: block;
-  }
-  iframe {
-    min-height: 300px;
-    height: 50vh;
-  }
+.delete-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+}
+.delete-btn:hover {
+      background-color: #c0392b;
 }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -86,8 +52,17 @@
 </head>
 <body>
 
-  <h1>⭐ تقييمات المستخدمين</h1>
-  <div class="rating-list" id="ratingList">جارٍ تحميل التقييمات...</div>
+  <h1>📚 لوحة التحكم</h1>
+
+  <div class="book-list" id="bookList">
+    <h2>📘 قائمة الكتب</h2>
+    <p>جارٍ تحميل الكتب...</p>
+  </div>
+
+  <div class="rating-list" id="ratingList">
+    <h2>⭐ جدول التقييمات</h2>
+    <p>جارٍ تحميل التقييمات...</p>
+  </div>
 
   <script>
     const firebaseConfig = {
@@ -102,20 +77,60 @@
 
     db.ref("ratings").once("value").then(snapshot => {
       const data = snapshot.val();
-      const container = document.getElementById("ratingList");
-      container.innerHTML = "";
+      const bookList = document.getElementById("bookList");
+      const ratingList = document.getElementById("ratingList");
+
+      bookList.innerHTML = "<h2>📘 قائمة الكتب</h2>";
+      ratingList.innerHTML = "<h2>⭐ جدول التقييمات</h2>";
+
+      if (!data) {
+        bookList.innerHTML += "<p>لا توجد كتب حتى الآن.</p>";
+        ratingList.innerHTML += "<p>لا توجد تقييمات حتى الآن.</p>";
+        return;
+}
 
       for (const bookId in data) {
+        // عرض الكتاب مع زر الحذف
+        const bookItem = document.createElement("div");
+        bookItem.className = "book-item";
+
+        const bookText = document.createElement("div");
+        bookText.className = "book-text";
+        bookText.textContent = `📘 ${bookId}`;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "delete-btn";
+        deleteBtn.textContent = "🗑 حذف الكتاب";
+        deleteBtn.onclick = () => {
+          if (confirm(`هل تريد حذف الكتاب "${bookId}"؟`)) {
+            db.ref("ratings/" + bookId).remove().then(() => {
+              bookItem.remove();
+              // حذف التقييمات المرتبطة
+              const ratingItems = document.querySelectorAll(`[data-book="${bookId}"]`);
+              ratingItems.forEach(item => item.remove());
+              alert("✅ تم حذف الكتاب والتقييمات المرتبطة به");
+}).catch(err => {
+              alert("❌ حدث خطأ أثناء الحذف: " + err.message);
+});
+}
+};
+
+        bookItem.appendChild(bookText);
+        bookItem.appendChild(deleteBtn);
+        bookList.appendChild(bookItem);
+
+        // عرض التقييمات المرتبطة بالكتاب
         for (const userId in data[bookId]) {
           const rating = data[bookId][userId];
-          const item = document.createElement("div");
-          item.className = "rating-item";
-          item.textContent = `📘 ${bookId} | 👤 المستخدم: ${userId} | ⭐ التقييم: ${rating}`;
-          container.appendChild(item);
-}
-}
+          const ratingItem = document.createElement("div");
+          ratingItem.className = "rating-item";
+          ratingItem.setAttribute("data-book", bookId);const ratingText = document.createElement("div");
+          ratingText.className = "rating-text";
+          ratingText.textContent = `📘 ${bookId} | 👤 المستخدم: ${userId} | ⭐ التقييم: ${rating}`;
 
-      if (container.innerHTML === "") {container.innerHTML = "لا توجد تقييمات حتى الآن.";
+          ratingItem.appendChild(ratingText);
+          ratingList.appendChild(ratingItem);
+}
 }
 });
   </script>
