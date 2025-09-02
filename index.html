@@ -312,24 +312,6 @@ body {
     storageBucket: "chat-m-r.firebasestorage.app",
     messagingSenderId: "950103914840",
     appId: "1:950103914840:android:13171827163f19808acd2d"
-    }
-    document.getElementById('loginBtn').onclick = function() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  // شرط الدخول للوحة التحكم
-  if (email === 'root' && password === 'root') {
-    window.location.href = 'dashboard.html'; // عدل اسم الصفحة إذا لزم الأمر
-    return;
-  }
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(() => {
-      msg.remove();
-      location.reload();
-    })
-    .catch(error => {
-      document.getElementById('loginError').textContent = error.message;
-    });
-};
   };
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
@@ -389,6 +371,23 @@ body {
         })
         .catch(error => {
           document.getElementById('loginError').textContent = error.message;
+          document.getElementById('loginBtn').onclick = function() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  // شرط الدخول للوحة التحكم
+  if (email === 'root' && password === 'root') {
+    window.location.href = 'dashboard.html'; // عدل اسم الصفحة إذا لزم الأمر
+    return;
+  }
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(() => {
+      msg.remove();
+      location.reload();
+    })
+    .catch(error => {
+      document.getElementById('loginError').textContent = error.message;
+    });
+};
         });
     };
 
