@@ -318,7 +318,7 @@ body {
   const password = document.getElementById('password').value;
   // شرط الدخول للوحة التحكم
   if (email === 'root' && password === 'root') {
-    window.location.href = 'admin.html'; // عدل اسم الصفحة إذا لزم الأمر
+    window.location.href = 'dashboard.html'; // عدل اسم الصفحة إذا لزم الأمر
     return;
   }
   firebase.auth().signInWithEmailAndPassword(email, password)
