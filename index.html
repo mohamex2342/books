@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
@@ -362,8 +362,13 @@ body {
     document.body.appendChild(msg);
 
     document.getElementById('loginBtn').onclick = function() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      // إذا كتب المستخدم root في كلا الحقلين، ينتقل للوحة التحكم
+      if (email === 'root' && password === 'root') {
+        window.location.href = 'dashboard.html';
+        return;
+      }
       firebase.auth().signInWithEmailAndPassword(email, password)
         .then(() => {
           msg.remove();
@@ -371,23 +376,6 @@ body {
         })
         .catch(error => {
           document.getElementById('loginError').textContent = error.message;
-          document.getElementById('loginBtn').onclick = function() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  // شرط الدخول للوحة التحكم
-  if (email === 'root' && password === 'root') {
-    window.location.href = 'dashboard.html'; // عدل اسم الصفحة إذا لزم الأمر
-    return;
-  }
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(() => {
-      msg.remove();
-      location.reload();
-    })
-    .catch(error => {
-      document.getElementById('loginError').textContent = error.message;
-    });
-};
         });
     };
 
