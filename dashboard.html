@@ -6,59 +6,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-size: 1rem;
-      padding: 0;
-      margin: 0;
       font-family: 'Cairo', sans-serif;
       background-color: #f4f4f4;
       padding: 20px;
-    }
+      margin: 0;
+}
     h1 {
-      color: #4b2e83;
       text-align: center;
-    }
-    .dashboard-container {
+      color: #4b2e83;
+}
+.dashboard-container {
       max-width: 700px;
       margin: auto;
       background: #fff;
       padding: 24px;
       border-radius: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .section-title {
+}
+.section-title {
       color: #007bff;
       margin-top: 30px;
       margin-bottom: 10px;
       font-size: 1.1em;
       text-align: right;
-    }
-    .control-btn {
+}
+.control-btn {
       padding: 8px 18px;
-      margin: 6px 0;
       background: linear-gradient(90deg, #4b2e83, #007bff);
       color: #fff;
       border: none;
       border-radius: 7px;
       font-size: 1em;
       cursor: pointer;
-      transition: background 0.2s;
       font-family: inherit;
-    }
-    .control-btn:hover {
+}
+.control-btn:hover {
       background: linear-gradient(90deg, #007bff, #4b2e83);
-    }
-    .input-group {
+}
+.input-group {
       margin-bottom: 12px;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-    }
-    .input-group label {
+}
+.input-group label {
       margin-bottom: 4px;
       font-size: 0.95em;
       color: #4b2e83;
-    }
-    .input-group input {
+}
+.input-group input {
       padding: 7px;
       border-radius: 6px;
       border: 1px solid #ccc;
@@ -66,41 +62,26 @@
       font-size: 1em;
       margin-bottom: 4px;
       box-sizing: border-box;
-    }
-    .rating-list {
+}
+.book-list,.rating-list {
       margin-top: 18px;
       background: #f9f9f9;
       padding: 14px;
       border-radius: 10px;
       box-shadow: 0 1px 4px #0001;
-    }
-    .rating-item {
-      border-bottom: 1px solid #eee;
-      padding: 8px 0;
-      font-size: 0.98em;
-    }
-    .rating-item:last-child {
-      border-bottom: none;
-    }
-    .book-list {
-      margin-top: 18px;
-      background: #f9f9f9;
-      padding: 14px;
-      border-radius: 10px;
-      box-shadow: 0 1px 4px #0001;
-    }
-    .book-item {
+}
+.book-item,.rating-item {
       border-bottom: 1px solid #eee;
       padding: 8px 0;
       font-size: 0.98em;
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    .book-item:last-child {
+}
+.book-item:last-child,.rating-item:last-child {
       border-bottom: none;
-    }
-    .delete-btn {
+}
+.delete-btn {
       background: #e74c3c;
       color: #fff;
       border: none;
@@ -108,26 +89,16 @@
       padding: 4px 10px;
       cursor: pointer;
       font-size: 0.95em;
-      margin-right: 8px;
-    }
-    .delete-btn:hover {
+}
+.delete-btn:hover {
       background: #c0392b;
-    }
-    @media (max-width: 600px) {
-      .dashboard-container {
-        max-width: 98vw;
-        padding: 10px 2vw;
-      }
-    }
+}
   </style>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body>
   <h1>لوحة تحكم الموقع</h1>
   <div class="dashboard-container">
-    <!-- إدارة الكتب -->
+    <!-- إضافة كتاب -->
     <div class="section-title">إضافة كتاب جديد</div>
     <form id="addBookForm">
       <div class="input-group">
@@ -139,32 +110,36 @@
         <input type="file" id="bookFile" accept="application/pdf" required>
       </div>
       <div class="input-group">
-        <label for="bookIcon">أيقونة الكتاب (رمز مثل 📘)</label>
+        <label for="bookIcon">أيقونة الكتاب</label>
         <input type="text" id="bookIcon" value="📘" required>
       </div>
       <button type="submit" class="control-btn">إضافة الكتاب</button>
       <div id="addBookMsg" style="color:#e74c3c;margin-top:8px;"></div>
     </form>
+
+    <!-- قائمة الكتب -->
     <div class="section-title">قائمة الكتب</div>
     <div class="book-list" id="bookList">جارٍ تحميل الكتب...</div>
 
-    <!-- إدارة التقييمات -->
+    <!-- التقييمات -->
     <div class="section-title">تقييمات المستخدمين</div>
     <div class="rating-list" id="ratingList">جارٍ تحميل التقييمات...</div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCPmffrAJIm3GELYowytRc50FiB317HWfY",
       authDomain: "chat-m-r.firebaseapp.com",
-      databaseURL: "https://chat-m-r-default-rtdb.firebaseio.com",
-      projectId: "chat-m-r"
-    };
+      databaseURL: "https://chat-m-r-default-rtdb.firebaseio.com",projectId: "chat-m-r"
+};
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const storage = firebase.storage();
 
-    // عرض الكتب
+    // تحميل الكتب
     function loadBooks() {
       db.ref("books").once("value").then(snapshot => {
         const data = snapshot.val();
@@ -173,7 +148,7 @@
         if (!data) {
           container.innerHTML = "لا توجد كتب حتى الآن.";
           return;
-        }
+}
         Object.keys(data).forEach(bookId => {
           const book = data[bookId];
           const item = document.createElement("div");
@@ -182,15 +157,15 @@
             <span>${book.icon || "📘"} ${book.title}</span>
             <span>
               <a href="${book.file}" target="_blank" style="color:#007bff;text-decoration:underline;">عرض الملف</a>
-              <button class="delete-btn" onclick="deleteBook('${bookId}')">حذف</button>
+              <button class="delete-btn" onclick="deleteBookFromGitHub('${book.file}')">حذف</button>
             </span>
           `;
           container.appendChild(item);
-        });
-      });
-    }
+});
+});
+}
 
-    // إضافة كتاب جديد
+    // إضافة كتاب
     document.getElementById("addBookForm").onsubmit = function(e) {
       e.preventDefault();
       const title = document.getElementById("bookTitle").value.trim();
@@ -198,39 +173,44 @@
       const icon = document.getElementById("bookIcon").value.trim() || "📘";
       const file = fileInput.files[0];
 
-      if (!title || !file) {
+      if (!title ||!file) {
         document.getElementById("addBookMsg").textContent = "يرجى إدخال جميع البيانات.";
         return;
-      }
+}
 
-      // رفع الملف إلى Firebase Storage
       const storageRef = storage.ref("books/" + Date.now() + "_" + file.name);
-      storageRef.put(file).then(snapshot => {
-        return snapshot.ref.getDownloadURL();
-      }).then(url => {
-        const bookId = "book" + Date.now();
-        db.ref("books/" + bookId).set({ title, file: url, icon }).then(() => {
-          document.getElementById("addBookMsg").textContent = "تمت إضافة الكتاب بنجاح!";
-          loadBooks();
-          document.getElementById("addBookForm").reset();
-        }).catch(() => {
-          document.getElementById("addBookMsg").textContent = "حدث خطأ أثناء الإضافة.";
-        });
-      }).catch(() => {
-        document.getElementById("addBookMsg").textContent = "فشل رفع الملف.";
-      });
-    };
+      storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL())
+.then(url => {
+          const bookId = "book" + Date.now();
+          db.ref("books/" + bookId).set({ title, file: url, icon}).then(() => {
+            document.getElementById("addBookMsg").textContent = "✅ تمت إضافة الكتاب!";
+            loadBooks();
+            document.getElementById("addBookForm").reset();
+});
+}).catch(() => {
+          document.getElementById("addBookMsg").textContent = "❌ فشل رفع الملف.";
+});
+};
 
-    // حذف كتاب
-    window.deleteBook = function(bookId) {
-      if (confirm("هل أنت متأكد من حذف هذا الكتاب؟")) {
-        db.ref("books/" + bookId).remove().then(() => {
-          loadBooks();
-        });
-      }
-    };
+    // حذف كتاب من GitHub عبر الخادم
+    function deleteBookFromGitHub(filePath) {
+      fetch("http://localhost:3000/delete-book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({ filePath})
+})
+.then(res => res.text())
+.then(msg => {
+        alert(msg);
+        loadBooks();
+})
+.catch(err => {
+        alert("❌ فشل الاتصال بالخادم");
+        console.error(err);
+});
+}
 
-    // عرض التقييمات
+    // تحميل التقييمات
     db.ref("ratings").on("value", snapshot => {
       const data = snapshot.val();
       const container = document.getElementById("ratingList");
@@ -238,7 +218,7 @@
       if (!data) {
         container.innerHTML = "لا توجد تقييمات حتى الآن.";
         return;
-      }
+}
       for (const bookId in data) {
         for (const userId in data[bookId]) {
           const rating = data[bookId][userId];
@@ -246,14 +226,10 @@
           item.className = "rating-item";
           item.textContent = `📘 ${bookId} | 👤 المستخدم: ${userId} | ⭐ التقييم: ${rating}`;
           container.appendChild(item);
-        }
-      }
-      if (container.innerHTML === "") {
-        container.innerHTML = "لا توجد تقييمات حتى الآن.";
-      }
-    });
+}
+}
+});
 
-    // تحميل الكتب عند فتح الصفحة
     loadBooks();
   </script>
 </body>
