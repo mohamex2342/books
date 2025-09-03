@@ -7,7 +7,6 @@ body {
 }
 .navbar {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   background: linear-gradient(90deg, #4b2e83 60%, #007bff 100%);
@@ -17,17 +16,35 @@ body {
   box-shadow: 0 4px 24px #4b2e8322;
   width: 100%;
   box-sizing: border-box;
-  gap: 18px;
   border-radius: 0 0 32px 32px;
 }
-.navbar .title {
+
+.navbar.left,
+.navbar.center,
+.navbar.right {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.navbar.left {
+  justify-content: flex-start;
+}
+
+.navbar.center {
+  justify-content: center;
+}
+
+.navbar.right {
+  justify-content: flex-end;
+}
+
+.navbar.title {
   font-weight: bold;
   letter-spacing: 1px;
-  flex: 1;
-  text-align: right;
   font-size: 1.3em;
-  order: 1;
-}
+  text-align: center;
+} 
 #mainLoginBtn {
   padding: 9px 22px;
   background: linear-gradient(90deg, #007bff 60%, #4b2e83 100%);
