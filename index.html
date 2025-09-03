@@ -14,8 +14,8 @@
 <body>
 
   <div class="navbar">
+     <button id="mainLoginBtn">تسجيل الدخول</button>
     <span class="title">📚 المكتبه الرقمية</span>
-    <button id="mainLoginBtn">تسجيل الدخول</button>
     <button class="search-icon" onclick="toggleSearch()" title="بحث">🔍</button>
   </div>
   <input type="text" id="searchInput" placeholder="🔍 ابحث عن كتاب..." onkeyup="filterBooks()">
@@ -26,13 +26,7 @@
       <div class="book-title">كتاب 1</div>
       <div class="actions">
         <a href="reader.html?file=books/book1.pdf">📖 قراءة</a>
-        <div class="rating" data-book="book1">
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-        </div>
+        <button class="rate-btn" data-book="book1">⭐ قيّم الكتاب</button>
       </div>
     </div>
     <div class="book" data-book-id="book2">
@@ -40,13 +34,7 @@
       <div class="book-title">كتاب 2</div>
       <div class="actions">
         <a href="reader.html?file=books/book2.pdf">📖 قراءة</a>
-        <div class="rating" data-book="book2">
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-        </div>
+        <button class="rate-btn" data-book="book2">⭐ قيّم الكتاب</button>
       </div>
     </div>
     <div class="book" data-book-id="book3">
@@ -54,13 +42,7 @@
       <div class="book-title">كتاب 3</div>
       <div class="actions">
         <a href="reader.html?file=books/book3.pdf">📖 قراءة</a>
-        <div class="rating" data-book="book3">
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-        </div>
+        <button class="rate-btn" data-book="book3">⭐ قيّم الكتاب</button>
       </div>
     </div>
     <div class="book" data-book-id="book4">
@@ -68,13 +50,7 @@
       <div class="book-title">كتاب 4</div>
       <div class="actions">
         <a href="reader.html?file=books/book4.pdf">📖 قراءة</a>
-        <div class="rating" data-book="book4">
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-        </div>
+        <button class="rate-btn" data-book="book4">⭐ قيّم الكتاب</button>
       </div>
     </div>
     <div class="book" data-book-id="book5">
@@ -82,13 +58,7 @@
       <div class="book-title">كتاب 5</div>
       <div class="actions">
         <a href="reader.html?file=books/book5.pdf">📖 قراءة</a>
-        <div class="rating" data-book="book5">
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-          <span>⭐</span>
-        </div>
+        <button class="rate-btn" data-book="book5">⭐ قيّم الكتاب</button>
       </div>
     </div>
     <!-- يمكنك إضافة المزيد من الكتب بنفس التنسيق -->
@@ -193,22 +163,48 @@
 
   document.getElementById('mainLoginBtn').onclick = showLoginPrompt;
 
-  // تلوين النجوم عند التفاعل
-  document.querySelectorAll('.rating').forEach(ratingDiv => {
-    const stars = ratingDiv.querySelectorAll('span');
-    stars.forEach((star, idx) => {
-      star.onclick = function() {
-        const bookId = ratingDiv.getAttribute('data-book');
-        // إزالة التقييم الحالي
-        stars.forEach(s => s.classList.remove('active'));
-        // إضافة التقييم الجديد
-        for (let i = 0; i <= idx; i++) {
-          stars[i].classList.add('active');
-        }
-        // حفظ التقييم في قاعدة البيانات
-        rateBook(bookId, idx + 1);
+  // استبدال التفاعل الخاص بالتقييم
+  document.querySelectorAll('.rate-btn').forEach(btn => {
+    btn.onclick = function() {
+      const bookId = btn.getAttribute('data-book');
+      // إنشاء نافذة منبثقة للتقييم
+      const oldPrompt = document.getElementById('ratePrompt');
+      if (oldPrompt) oldPrompt.remove();
+
+      const prompt = document.createElement('div');
+      prompt.id = 'ratePrompt';
+      prompt.style = 'position:fixed;top:35%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:24px 18px;border-radius:12px;box-shadow:0 4px 24px #0002;z-index:9999;text-align:center;';
+      prompt.innerHTML = `
+        <button id="closeRatePrompt" style="position:absolute;top:10px;left:10px;background:#e74c3c;color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:1.1em;cursor:pointer;">×</button>
+        <div style="font-size:1.1em;color:#4b2e83;margin-bottom:10px;">اكتب عدد النجوم (1 إلى 5):</div>
+        <input id="starCount" type="number" min="1" max="5" style="width:60px;padding:6px;border-radius:6px;border:1px solid #ccc;margin-bottom:10px;"><br>
+        <button id="submitRate" style="padding:7px 18px;background:#007bff;color:#fff;border:none;border-radius:7px;font-size:1em;cursor:pointer;">إرسال التقييم</button>
+        <div id="rateError" style="color:#e74c3c;margin-top:8px;"></div>
+      `;
+      document.body.appendChild(prompt);
+
+      document.getElementById('closeRatePrompt').onclick = function() {
+        prompt.remove();
       };
-    });
+
+      document.getElementById('submitRate').onclick = function() {
+        const val = parseInt(document.getElementById('starCount').value);
+        if (isNaN(val) || val < 1 || val > 5) {
+          document.getElementById('rateError').textContent = "يرجى إدخال رقم بين 1 و 5.";
+          return;
+        }
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            const uid = user.uid;
+            db.ref(`ratings/${bookId}/${uid}`).set(val);
+            alert("شكراً لتقييمك!");
+            prompt.remove();
+          } else {
+            document.getElementById('rateError').textContent = "يجب تسجيل الدخول أولاً.";
+          }
+        });
+      };
+    };
   });
 </script>
 </body>
