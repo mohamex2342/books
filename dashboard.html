@@ -140,15 +140,16 @@
     const storage = firebase.storage();
 
     // تحميل الكتب
+      // عرض الكتب
     function loadBooks() {
-      db.ref("books").once("value").then(snapshot => {
+      db.ref("books").on("value", snapshot => {
         const data = snapshot.val();
         const container = document.getElementById("bookList");
         container.innerHTML = "";
         if (!data) {
           container.innerHTML = "لا توجد كتب حتى الآن.";
           return;
-}
+        }
         Object.keys(data).forEach(bookId => {
           const book = data[bookId];
           const item = document.createElement("div");
@@ -157,13 +158,14 @@
             <span>${book.icon || "📘"} ${book.title}</span>
             <span>
               <a href="${book.file}" target="_blank" style="color:#007bff;text-decoration:underline;">عرض الملف</a>
-              <button class="delete-btn" onclick="deleteBookFromGitHub('${book.file}')">حذف</button>
+              <button class="delete-btn" onclick="deleteBook('${bookId}')">حذف</button>
             </span>
           `;
           container.appendChild(item);
-});
-});
-}
+        });
+      });
+    }
+
 
     // إضافة كتاب
     document.getElementById("addBookForm").onsubmit = function(e) {
