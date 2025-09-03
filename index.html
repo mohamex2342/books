@@ -143,6 +143,7 @@
     msg.id = 'loginMsg';
     msg.style = 'position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:30px 20px;border-radius:12px;box-shadow:0 4px 24px #0002;z-index:9999;text-align:center;';
     msg.innerHTML = `
+      <button id="closeLoginMsg" style="position:absolute;top:10px;left:10px;background:#e74c3c;color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:1.2em;cursor:pointer;">×</button>
       <div style="font-size:1.2em;color:#e74c3c;margin-bottom:12px;">سجل الدخول للوصول إلى جميع الميزات.</div>
       <input id="email" type="email" placeholder="البريد الإلكتروني" style="width:90%;margin-bottom:8px;padding:8px;border-radius:6px;border:1px solid #ccc;"><br>
       <input id="password" type="password" placeholder="كلمة المرور" style="width:90%;margin-bottom:12px;padding:8px;border-radius:6px;border:1px solid #ccc;"><br>
@@ -152,9 +153,11 @@
     `;
     document.body.appendChild(msg);
 
-    document.getElementById('loginBtn').onclick = function() {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
+    // زر الإغلاق
+    document.getElementById('closeLoginMsg').onclick = function() {
+      msg.remove();
+    };
+
       // إذا كتب المستخدم root في كلا الحقلين، ينتقل للوحة التحكم
       if (email === 'root' && password === 'root') {
         window.location.href = 'dashboard.html';
